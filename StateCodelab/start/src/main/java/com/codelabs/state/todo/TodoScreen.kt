@@ -27,14 +27,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -122,29 +125,22 @@ fun TodoItemInlineEditor(
     onEditDone: () -> Unit,
     onRemoveItem: () -> Unit
 ) {
-    TodoItemInput(
-        text = item.task,
-        onTextChange = { onEditItemChange(item.copy(task = it)) },
-        icon = item.icon,
-        onIconChange = { onEditItemChange(item.copy(icon = it)) },
-        submit = onEditDone,
-        iconsVisible = true
-    ) {
-        Row {
-            val shrinkButtons = Modifier.widthIn(20.dp)
-            TextButton(onClick = onEditDone, modifier = shrinkButtons) {
-                Text(
-                    text = "\uD83D\uDCBE",
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.width(30.dp)
-                )
-            }
-            TextButton(onClick = onRemoveItem, modifier = shrinkButtons) {
-                Text(
-                    text = "❌",
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.width(30.dp)
-                )
+    Surface(elevation = 6.dp) {
+        TodoItemInput(
+            text = item.task,
+            onTextChange = { onEditItemChange(item.copy(task = it)) },
+            icon = item.icon,
+            onIconChange = { onEditItemChange(item.copy(icon = it)) },
+            submit = onEditDone,
+            iconsVisible = true
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = onEditDone) {
+                    Icon(Icons.Default.Save, tint = MaterialTheme.colors.primary)
+                }
+                IconButton(onClick = onRemoveItem) {
+                    Icon(Icons.Default.Delete, tint = MaterialTheme.colors.primary)
+                }
             }
         }
     }
@@ -263,6 +259,13 @@ fun PreviewTodoScreen() {
 @Composable
 fun PreviewTodoInput() {
     TodoItemEntryInput(onItemComplete = {})
+}
+
+@Preview
+@Composable
+fun PreviewInlineEdit() {
+    val todo = remember { generateRandomTodoItem() }
+    TodoItemInlineEditor(item = todo, onEditItemChange = {}, onEditDone = {}, onRemoveItem = {})
 }
 
 @Preview
